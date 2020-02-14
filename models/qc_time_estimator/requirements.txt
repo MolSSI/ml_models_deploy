@@ -1,0 +1,22 @@
+# packaging
+setuptools==40.6.3
+wheel==0.32.3
+basis_set_exchange
+# git from conda
+
+
+# production requirements
+numpy==1.18.1
+scikit-learn==0.22.1
+pandas==1.0.0
+# qcelemental==0.12.0
+pydantic==1.4
+
+# plotly
+
+# latest dev master
+git+https://github.com/MolSSI/QCElemental.git@master#egg=qcelemental
+
+
+# testing requirements
+pytest>=4.6.6

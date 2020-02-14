@@ -1,0 +1,16 @@
+include *.txt
+include *.md
+include *.cfg
+include *.pkl
+recursive-include ./qc_time_estimator/*
+
+include qc_time_estimator/datasets/train_test_with_header.csv
+include qc_time_estimator/datasets/test_data.csv
+include qc_time_estimator/trained_models/*.pkl
+include qc_time_estimator/VERSION
+
+include ./requirements.txt
+exclude *.log
+
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
