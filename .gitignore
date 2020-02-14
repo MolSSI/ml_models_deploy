@@ -132,3 +132,5 @@ dmypy.json
 .idea/
 
 *.pkl
+test_data.csv
+train_test_with_header.csv
