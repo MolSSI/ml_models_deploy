@@ -10,6 +10,7 @@ DATASET_DIR = PACKAGE_ROOT / 'datasets'
 # data
 TESTING_DATA_FILE = 'test_data.csv'  # for pytest
 TRAINING_DATA_FILE = 'train_test_with_header.csv'
+ZENODO_TRAINING_DATA_URL = 'https://zenodo.org/record/3669414/files/train_test_with_header.zip?download=1'
 
 PIPELINE_NAME = 'qc_time_estimator'
 PIPELINE_SAVE_FILE = f'{PIPELINE_NAME}_output_v'

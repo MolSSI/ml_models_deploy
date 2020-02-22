@@ -30,7 +30,7 @@ if __name__ == "__main__":
     # multiprocessing requires the fork to happen in a __main__ protected block
 
     # change max_rows, None means all data
-    data = load_dataset(file_name=config.TRAINING_DATA_FILE, max_rows=None)
+    data = load_dataset(file_name=config.TRAINING_DATA_FILE, nrows=None)
 
     data = data.dropna(axis=0)
 

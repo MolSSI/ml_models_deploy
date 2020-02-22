@@ -19,6 +19,11 @@ def run_training(with_accuracy=True) -> Union[Tuple[float, float], None]:
     Saves the model (using the name and location in the config)
     Optionally: calculate the train and test accuracy (Mean Absolute Percent Error)
 
+    Parameters
+    ----------
+
+    with_accuracy: bool, default True
+        If true, calculate and return the training and test accuracy
 
     """
 
@@ -26,7 +31,7 @@ def run_training(with_accuracy=True) -> Union[Tuple[float, float], None]:
     # read training data
     data = load_dataset(file_name=config.TRAINING_DATA_FILE)
 
-    logger.debug(data.columns)
+    logger.debug(f'Training data columns: \n{data.columns}')
 
     # Drop rows with any NAN values - No imputation
     data = data.dropna(axis=0)

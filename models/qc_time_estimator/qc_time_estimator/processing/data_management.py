@@ -1,20 +1,49 @@
 import pandas as pd
 import joblib
 from sklearn.pipeline import Pipeline
-
+import requests
+import shutil
 from qc_time_estimator.config import config
 from qc_time_estimator import __version__ as _version
 import logging
 from typing import List
+from zipfile import ZipFile
+import pathlib
 
-_logger = logging.getLogger(__name__)
+
+logger = logging.getLogger(__name__)
 
 
-def load_dataset(*, file_name: str, max_rows=-1) -> pd.DataFrame:
-    data = pd.read_csv(f'{config.DATASET_DIR}/{file_name}')
+def _download_unzip_dataset(file_name: str) -> None:
+    """Try download and unziping the datset zip file from zenodo"""
 
-    if max_rows:
-        return data.iloc[:max_rows]
+    zip_file = f"{file_name.rstrip('.csv')}.zip"
+    if not pathlib.Path(zip_file).exists():
+        # Get from Zenodo
+        logger.info('Downloading training data from Zenodo...')
+        url = config.ZENODO_TRAINING_DATA_URL
+        r = requests.get(url, verify=False, stream=True)
+        r.raw.decode_content = True
+        with open(zip_file, 'wb') as f:
+            logger.info('Saving downloaded training data')
+            shutil.copyfileobj(r.raw, f)
+
+    logger.info('Unzipping training data....')
+    with ZipFile(zip_file, 'r') as zip_obj:
+        zip_obj.extractall(config.DATASET_DIR)
+
+    logger.info('Unzipping done.')
+
+
+def load_dataset(*, file_name: str, nrows=None) -> pd.DataFrame:
+
+    # check if file exists, otherwise, try unziping
+    pathlib_file = config.DATASET_DIR / file_name
+
+    if not pathlib_file.exists():  # try downloading and unzipping it
+        _download_unzip_dataset(pathlib_file)
+
+    data = pd.read_csv(pathlib_file, nrows=nrows)
 
     return data
 
@@ -34,7 +63,7 @@ def save_pipeline(*, pipeline_to_persist):
 
     remove_old_pipelines(files_to_keep=[save_file_name])
     joblib.dump(pipeline_to_persist, save_path)
-    _logger.info(f'saved pipeline: {save_file_name}')
+    logger.info(f'saved pipeline: {save_file_name}')
 
 
 def load_pipeline(*, file_name: str) -> Pipeline:

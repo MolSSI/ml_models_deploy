@@ -10,9 +10,9 @@ from datetime import datetime
 class ExecutationTimeInput(BaseModel):
 
     # ---------- User Input
-    nthreads: int = 1
-    cpu_clock_speed: confloat(gt=499, lt=10001)
-    cpu_launch_year: conint(gt=1990, lt=datetime.now().year+1)
+    nthreads: conint(ge=1) = 1
+    cpu_clock_speed: confloat(ge=500, le=75000)
+    cpu_launch_year: conint(ge=1990, le=datetime.now().year)
 
     driver: DriverEnum
     method: str             # TODO: get accepted list from qcelemental
