@@ -10,9 +10,6 @@ from typing import Union, List
 
 logger = logging.getLogger(__name__)
 
-pipeline_file_name = f'{config.PIPELINE_SAVE_FILE}{_version}.pkl'
-_qc_time = load_pipeline(file_name=pipeline_file_name)
-
 
 def make_prediction(*, input_data: Union[pd.DataFrame, List[dict]]) -> dict:
     """Make a prediction using a saved model pipeline.
@@ -52,6 +49,9 @@ def make_prediction(*, input_data: Union[pd.DataFrame, List[dict]]) -> dict:
         as well as the model version.
     """
 
+    pipeline_file_name = f'{config.PIPELINE_SAVE_FILE}{_version}.pkl'
+    _qc_time = load_pipeline(file_name=pipeline_file_name)
+
     data = pd.DataFrame(input_data)
     validated_data = validate_inputs(input_data=data)
 
@@ -65,7 +65,6 @@ def make_prediction(*, input_data: Union[pd.DataFrame, List[dict]]) -> dict:
         f'Predictions: {results}')
 
     return results
-
 
 def get_accuracy(model, X, y):
     """Calculate the prediction acuracy (MAPE) for the given data using the

@@ -2,7 +2,7 @@ from sklearn.model_selection import train_test_split
 # from sklearn.metrics import mean_absolute_error
 from qc_time_estimator import pipeline
 from qc_time_estimator.processing.data_management import (
-     load_dataset, save_pipeline, save_data)
+     load_dataset, save_pipeline, save_data, curr_model_exists)
 from qc_time_estimator.config import config
 from qc_time_estimator.predict import get_accuracy
 from qc_time_estimator import __version__ as _version
@@ -13,7 +13,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def run_training(with_accuracy=True) -> Union[Tuple[float, float], None]:
+def run_training(with_accuracy=True, overwrite=True) -> Union[Tuple[float, float], None]:
     """
     Run trainging using the data and prams in the config file
     Saves the model (using the name and location in the config)
@@ -25,7 +25,14 @@ def run_training(with_accuracy=True) -> Union[Tuple[float, float], None]:
     with_accuracy: bool, default True
         If true, calculate and return the training and test accuracy
 
+    overwrite: bool
+        overwrite the model file if it exists
+
     """
+
+    if not overwrite and curr_model_exists():
+        logger.info("Model is already saved. Skipping training")
+        return
 
     logger.info('Reading training data.')
     # read training data

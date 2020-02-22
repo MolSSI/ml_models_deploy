@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/MolSSI/ml_models_deploy.svg?branch=master)](https://travis-ci.org/MolSSI/ml_models_deploy)
+[![codecov](https://codecov.io/gh/MolSSI/ml_models_deploy/branch/master/graph/badge.svg)](https://codecov.io/gh/MolSSI/ml_models_deploy)
+
+
 ## How to use the package to reproduce the model and get predictions
 
 1. Create a conda environment, with rdkit, and install the package.
