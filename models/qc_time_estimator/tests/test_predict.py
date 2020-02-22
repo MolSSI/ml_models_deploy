@@ -6,7 +6,7 @@ from qc_time_estimator import config
 from qc_time_estimator import __version__ as _version
 
 
-def test_single_prediction():
+def test_single_prediction(trained_model):
 
     test_data = load_dataset(file_name=config.TESTING_DATA_FILE)
     # get first row of the Dataframe
@@ -19,7 +19,7 @@ def test_single_prediction():
     assert pytest.approx(pred.get('predictions')[0], 0.0285, abs=1e-3)
 
 
-def test_multiple_predictions():
+def test_multiple_predictions(trained_model):
 
     test_data = load_dataset(file_name=config.TESTING_DATA_FILE)
 
