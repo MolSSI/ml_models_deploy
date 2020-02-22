@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 def _download_unzip_dataset(file_name: str) -> None:
     """Try download and unziping the datset zip file from zenodo"""
 
-    zip_file = f"{file_name.rstrip('.csv')}.zip"
+    zip_file = f"{str(file_name).rstrip('.csv')}.zip"
     if not pathlib.Path(zip_file).exists():
         # Get from Zenodo
         logger.info('Downloading training data from Zenodo...')
