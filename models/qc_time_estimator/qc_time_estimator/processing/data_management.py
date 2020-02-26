@@ -1,7 +1,7 @@
 import pandas as pd
 import joblib
 from sklearn.pipeline import Pipeline
-import requests
+from urllib.request import urlretrieve
 import shutil
 from qc_time_estimator.config import config
 from qc_time_estimator import __version__ as _version
@@ -22,11 +22,7 @@ def _download_unzip_dataset(file_name: str) -> None:
         # Get from Zenodo
         logger.info('Downloading training data from Zenodo...')
         url = config.ZENODO_TRAINING_DATA_URL
-        r = requests.get(url, verify=False, stream=True)
-        r.raw.decode_content = True
-        with open(zip_file, 'wb') as f:
-            logger.info('Saving downloaded training data')
-            shutil.copyfileobj(r.raw, f)
+        urlretrieve(url, zip_file)
 
     logger.info('Unzipping training data....')
     with ZipFile(zip_file, 'r') as zip_obj:
