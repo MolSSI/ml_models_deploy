@@ -8,6 +8,18 @@ from typing import List
 from sklearn.base import BaseEstimator, TransformerMixin
 
 
+forcefield_names = frozenset(["uff", "mm94"])
+ml_names = frozenset(["ani1", "ani1x", "ani1cxx", "ani-1", "ani-1x", "ani-1cxx"])
+semiempirical_names = frozenset(
+    ["am1", "pm3", "pm6", "pm7", "xtb", "gfn0-xtb", "gfn-xtb", "gfn2-xtb"]
+)
+mp2_names = frozenset(["mp2", "scs-mp2", "sapt0"])
+ccsd_names = frozenset(["ccsd", "sapt2", "sapt2+", "sapt2/3"])
+ccsdt_names = frozenset(["ccsd(t)"])
+dft_names = frozenset(dft_info.dftfunctionalinfo.functionals.keys())
+
+method_names = forcefield_names | ml_names | semiempirical_names | mp2_names | ccsdt_names | ccsd_names | dft_names
+
 
 class MethodEnum(int, Enum):
         """ method classes, ranked by cost"""
@@ -53,16 +65,6 @@ class MethodFeatures(BaseEstimator, TransformerMixin):
 
         dft_features = defaultdict(list)
         dft_feature_names = ["ansatz", "c_hybrid", "x_hybrid", "c_lrc", "x_lrc", "nlc"]
-
-        forcefield_names = frozenset(["uff", "mm94"])
-        ml_names = frozenset(["ani1", "ani1x", "ani1cxx", "ani-1", "ani-1x", "ani-1cxx"])
-        semiempirical_names = frozenset(
-            ["am1", "pm3", "pm6", "pm7", "xtb", "gfn0-xtb", "gfn-xtb", "gfn2-xtb"]
-        )
-        mp2_names = frozenset(["mp2", "scs-mp2", "sapt0"])
-        ccsd_names = frozenset(["ccsd", "sapt2", "sapt2+", "sapt2/3"])
-        ccsdt_names = frozenset(["ccsd(t)"])
-
 
         method_enum = []
         for method in X.method:
