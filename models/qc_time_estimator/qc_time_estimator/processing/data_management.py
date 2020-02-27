@@ -62,7 +62,7 @@ def save_pipeline(*, pipeline_to_persist):
     logger.info(f'saved pipeline: {save_file_name}')
 
 
-def curr_model_exists():
+def current_model_exists():
     file_name = f'{config.PIPELINE_SAVE_FILE}{_version}.pkl'
     path = config.TRAINED_MODEL_DIR / file_name
 
