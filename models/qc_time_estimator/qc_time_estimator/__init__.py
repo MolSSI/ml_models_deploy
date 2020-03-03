@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 # logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.DEBUG)
 logger.addHandler(logging_config.get_console_handler())
-logger.propagate = False
+# logger.propagate = False
 
 
 
