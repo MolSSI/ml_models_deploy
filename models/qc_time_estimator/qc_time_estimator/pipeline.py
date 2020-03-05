@@ -4,7 +4,7 @@ from sklearn.ensemble import GradientBoostingRegressor
 from qc_time_estimator.processing import preprocessors
 from qc_time_estimator.processing import features_extraction
 from qc_time_estimator.config import config
-
+from qc_time_estimator.nerual_networks import nn_model_steps
 import logging
 
 
@@ -54,5 +54,11 @@ qc_time = Pipeline([
     *[(k,v) for k, v in features_steps.items()],
     # ('scaler', MinMaxScaler()),
     ('mean_gradient_boosting_regressor', model_mean)
+])
+
+## Neural Networks model
+qc_time_nn = Pipeline([
+    *[(k,v) for k, v in features_steps.items()],
+    *[(k,v) for k, v in nn_model_steps.items()],
 ])
 
