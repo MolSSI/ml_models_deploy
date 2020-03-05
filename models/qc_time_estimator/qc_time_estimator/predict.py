@@ -3,6 +3,7 @@ import numpy as np
 from qc_time_estimator.config import config
 from qc_time_estimator.processing.data_management import load_pipeline
 from qc_time_estimator.processing.validation import validate_inputs
+from qc_time_estimator.metrics import mape, percentile_rel_99
 from qc_time_estimator import __version__ as _version
 import logging
 from typing import Union, List
@@ -67,11 +68,11 @@ def make_prediction(*, input_data: Union[pd.DataFrame, List[dict]]) -> dict:
     return results
 
 def get_accuracy(model, X, y):
-    """Calculate the prediction acuracy (MAPE) for the given data using the
-    given model"""
+    """Calculate the prediction acuracy (MAPE) and the Percentile for the
+     given data using the given model"""
 
     pred =  model.predict(X)
-    prec_error = (y - pred) / y * 100
-    mape = np.abs(prec_error).mean()  # Mean absolute % error
+    mape_score = mape(y, pred)
+    percentile_99 = percentile_rel_99(y, pred)
 
-    return mape
+    return mape_score, percentile_99

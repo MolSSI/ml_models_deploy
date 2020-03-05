@@ -10,13 +10,29 @@ DATASET_DIR = PACKAGE_ROOT / 'datasets'
 # data
 TESTING_DATA_FILE = 'test_data.csv'  # for pytest
 TRAINING_DATA_FILE = 'train_test_with_header.csv'
+# TRAINING_DATA_FILE = 'StratifiedTimingData_10000_bucket_wall_time.csv'
 ZENODO_TRAINING_DATA_URL = 'https://zenodo.org/record/3669414/files/train_test_with_header.zip?download=1'
 
 PIPELINE_NAME = 'qc_time_estimator'
 PIPELINE_SAVE_FILE = f'{PIPELINE_NAME}_output_v'
 
 
+BEST_MODEL_PARAMS_OLD = {
+    'mean_gradient_boosting_regressor__max_depth': 18,
+}
+
+BEST_MODEL_PARAMS = {
+    'nn_model__input_dim': 22,
+    'nn_model__nodes_per_layer': [10],
+    'nn_model__batch_size': 100,
+    'nn_model__epochs': 50,
+    'nn_model__optimizer': 'adam',
+}
+
 # Model config
+
+# TEST_SIZE = 0.2
+# TRAIN_SIZE = None
 
 TEST_SIZE = 100_000
 TRAIN_SIZE = 100_000
