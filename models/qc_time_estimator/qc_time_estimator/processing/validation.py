@@ -11,8 +11,8 @@ class ExecutationTimeInput(BaseModel):
 
     # ---------- User Input
     nthreads: conint(ge=1) = 1
-    cpu_clock_speed: confloat(ge=500, le=75000)
-    cpu_launch_year: conint(ge=1990, le=datetime.now().year)
+    cpu_clock_speed: confloat(ge=1000, le=4000)
+    cpu_launch_year: conint(ge=2000, le=datetime.now().year)
 
     driver: DriverEnum
     method: str             # TODO: get accepted list from qcelemental
