@@ -1,11 +1,14 @@
+from qc_time_estimator.config import config
+import numpy as np
+np.random.seed(config.SEED)
+
+import logging
 from pprint import pprint
 from time import time
-import logging
-import numpy as np
 from sklearn.metrics import make_scorer
-from qc_time_estimator import config
 from sklearn.model_selection import GridSearchCV
 from qc_time_estimator.pipeline import qc_time
+from qc_time_estimator.metrics import mape, percentile_rel_99
 from qc_time_estimator.processing.data_management import load_dataset
 from sklearn.model_selection import train_test_split
 
@@ -17,13 +20,9 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger(__name__)
 
 
-
 parameters = {
-    'mean_gradient_boosting_regressor__max_depth': (10, 100, 10),
+    'mean_gradient_boosting_regressor__max_depth': [50],
 }
-
-def mape(y_true, y_pred):
-    return - np.abs(100 * (y_true - y_pred) / y_true).mean()
 
 
 if __name__ == "__main__":
@@ -36,15 +35,17 @@ if __name__ == "__main__":
 
     X_train, X_test, y_train, y_test = train_test_split(
         data,
-        data[config.TARGET]/ 3600.0,
-        test_size=config.TEST_SIZE,
-        train_size=config.TRAIN_SIZE,
+        data[config.TARGET] / 3600.0,
+        test_size=0.2,
+        # test_size=config.TEST_SIZE,
+        # train_size=config.TRAIN_SIZE,
         random_state=config.SEED)
 
     grid_search = GridSearchCV(qc_time,
                                parameters,
-                               scoring=make_scorer(mape),
+                               scoring=make_scorer(percentile_rel_99),
                                n_jobs=-1,
+                               cv=3,
                                verbose=1)
 
     print("Performing grid search...")
@@ -58,6 +59,16 @@ if __name__ == "__main__":
 
     print("Best score: %0.3f" % grid_search.best_score_)
     print("Best parameters set:")
-    best_parameters = grid_search.best_estimator_.get_params()
+    # best_parameters = grid_search.best_estimator_.get_params()
+    best_parameters = grid_search.best_params_
     for param_name in sorted(parameters.keys()):
         print("\t%s: %r" % (param_name, best_parameters[param_name]))
+
+    y_pred = grid_search.best_estimator_.predict(X_test)
+    y_train_pred = grid_search.best_estimator_.predict(X_train)
+
+    print('Y Train score 99th percentile: ', percentile_rel_99(y_train, y_train_pred))
+    print('Train mean: ', mape(y_train, y_train_pred))
+
+    print('Y Test score 99th percentile: ', percentile_rel_99(y_test, y_pred))
+    print('Test mean: ', mape(y_test, y_pred))
