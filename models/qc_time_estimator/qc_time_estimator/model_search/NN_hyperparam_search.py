@@ -12,8 +12,10 @@ from qc_time_estimator.metrics import mape, percentile_rel_99
 from qc_time_estimator.processing.data_management import load_dataset
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold
+import pandas as pd
+from datetime import datetime
+from sklearn.utils.fixes import loguniform
 from qc_time_estimator.processing.data_management import save_pipeline
-
 
 
 logging.basicConfig(level=logging.INFO,
@@ -23,11 +25,12 @@ logger = logging.getLogger(__name__)
 
 
 parameters = {
-    'nn_model__input_dim': [22],
-    # 'nn_model__nodes_per_layer': [[10]],
-    'nn_model__batch_size': [100],  # better than 25
-    'nn_model__epochs': [50], #, 500, 25],  # 30 was good, 100 less
-    'nn_model__optimizer': ['adam'], #, 'rmsprop'],
+    'nn_model__input_dim': [22,],
+    'nn_model__nodes_per_layer': [(10, 5), (10, 10, 5)],
+    'nn_model__dropout': [0.1, 0.2], #[0, 0.1, 0.2, 0.3],  # 0.1 or 0.2
+    'nn_model__batch_size': [75, 100], #[50, 75, 100, 150, 200, 300],  # 75
+    'nn_model__epochs': [200, 300], # [50, 100, 150, 200, 250, 300],  # 200 better
+    'nn_model__optimizer': ['adam'], #, 'rmsprop'],  # adam is better
 }
 
 
@@ -39,20 +42,28 @@ if __name__ == "__main__":
 
     data = data.dropna(axis=0)
 
+    bins = np.linspace(0, data.shape[0], 100)  # 100 bins
+    y_binned = np.digitize(data[config.TARGET]/ 3600.0, bins)
+
     X_train, X_test, y_train, y_test = train_test_split(
         data,
         data[config.TARGET]/ 3600.0,
         test_size=0.2,
+        stratify=y_binned,
         # test_size=config.TEST_SIZE,
         # train_size=config.TRAIN_SIZE,
         random_state=config.SEED)
 
     grid_search = GridSearchCV(qc_time_nn,
                                parameters,
-                               scoring=make_scorer(percentile_rel_99),
+                               scoring={
+                                   'percentile99': make_scorer(percentile_rel_99, greater_is_better=False),
+                                   'MAPE': make_scorer(mape, greater_is_better=False),
+                               },
+                               refit='percentile99',
                                n_jobs=-1,
                                cv=KFold(n_splits=2, random_state=0),
-                               verbose=0)
+                               verbose=1)
 
     print("Performing grid search...")
     print("pipeline:", [name for name, _ in qc_time_nn.steps])
@@ -70,6 +81,8 @@ if __name__ == "__main__":
     for param_name in sorted(parameters.keys()):
         print("\t%s: %r" % (param_name, best_parameters[param_name]))
 
+    df = pd.DataFrame(grid_search.cv_results_)
+    df.to_csv(f'./search_results/grid_search_nn_statified{datetime.now().strftime("%Y-%m-%d %H:%M")}.csv', index=None)
 
     y_pred = grid_search.best_estimator_.predict(X_test)
     y_train_pred = grid_search.best_estimator_.predict(X_train)
@@ -79,3 +92,5 @@ if __name__ == "__main__":
 
     print('Y Test 99th percentile: ', percentile_rel_99(y_test, y_pred))
     print('Test mape: ', mape(y_test, y_pred))
+
+    # save_pipeline(pipeline_to_persist=grid_search.best_estimator_)

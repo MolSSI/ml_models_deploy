@@ -37,6 +37,6 @@ nn_model_steps = {
     'standardize': StandardScaler(),
     'nn_model': KerasRegressor(build_fn=get_NN_model,
                                epochs=50,
-                               batch_size=100,
-                               verbose=1)
+                               batch_size=75,
+                               verbose=0)
 }
