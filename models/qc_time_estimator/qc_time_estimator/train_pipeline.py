@@ -17,7 +17,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def run_training(with_accuracy=True, overwrite=True) -> Union[Tuple[float, float], None]:
+def run_training(with_accuracy=True, overwrite=True,
+                 use_all_data=False) -> Union[Tuple[float, float], None]:
     """
     Run trainging using the data and prams in the config file
     Saves the model (using the name and location in the config)
@@ -31,6 +32,10 @@ def run_training(with_accuracy=True, overwrite=True) -> Union[Tuple[float, float
 
     overwrite: bool
         overwrite the model file if it exists
+
+    use_all_data: bool
+        use all available data for training (used ONLY for out of sample prediction
+        in production)
 
     """
 
@@ -47,11 +52,15 @@ def run_training(with_accuracy=True, overwrite=True) -> Union[Tuple[float, float
     # Drop rows with any NAN values - No imputation
     data = data.dropna(axis=0)
 
+    test_size, train_size = config.TEST_SIZE, config.TRAIN_SIZE
+    if use_all_data:
+        test_size, train_size = None, 0.99
+
     X_train, X_test, y_train, y_test = train_test_split(
         data,
         data[config.TARGET]/ 3600.0,
-        test_size=config.TEST_SIZE,
-        train_size=config.TRAIN_SIZE,
+        test_size=test_size,
+        train_size=train_size,
         random_state=config.SEED)
 
     logger.info('Start fitting model...')
@@ -81,4 +90,4 @@ def run_training(with_accuracy=True, overwrite=True) -> Union[Tuple[float, float
 
 
 if __name__ == '__main__':
-    run_training(with_accuracy=True)
+    run_training()

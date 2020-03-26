@@ -26,7 +26,7 @@ BEST_MODEL_PARAMS = {
     'nn_model__input_dim': 22,
     'nn_model__nodes_per_layer': [10],
     'nn_model__batch_size': 75,
-    'nn_model__epochs': 200,
+    'nn_model__epochs': 2,
     'nn_model__optimizer': 'adam',
 }
 

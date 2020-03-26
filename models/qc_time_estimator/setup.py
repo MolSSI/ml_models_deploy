@@ -71,6 +71,9 @@ setup(
     extras_require={},
     include_package_data=True,
     license='BSD-3C',
+    entry_points={
+            "console_scripts": ["qc-time-estimator=qc_time_estimator.cli:main"],
+    },
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
