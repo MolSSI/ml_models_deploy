@@ -25,7 +25,7 @@ class ExecutationTimeInput(BaseModel):
 
     # ----------- Generated from User Input
     nelec: Optional[int]
-    nmo: Optional[int]
+    nmo: Optional[int]   # number of molecular orbitals (based on molecule and basis set)
 
     @root_validator
     def check_passwords_match(cls, values):
