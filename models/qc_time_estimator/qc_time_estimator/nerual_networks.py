@@ -3,10 +3,12 @@ from keras.layers import Dense, Dropout
 from keras.wrappers.scikit_learn import KerasRegressor
 from sklearn.preprocessing import StandardScaler
 from qc_time_estimator.metrics import percentile_rel_99
+from keras.optimizers import Adam
 
 
 def get_NN_model(input_dim=22, nodes_per_layer=[10], dropout=0.1,
-                 optimizer='adam', loss='mean_absolute_percentage_error'):
+                 optimizer='adam', loss='mean_absolute_percentage_error',
+                 learning_rate=0.001):
 
     # create Keras NN model
     model = Sequential()
@@ -26,6 +28,9 @@ def get_NN_model(input_dim=22, nodes_per_layer=[10], dropout=0.1,
                     activation='linear', # the default
                     ))
 
+    if optimizer == 'adam':
+        optimizer = Adam(learning_rate=learning_rate)
+
     # Compile model
     model.compile(optimizer=optimizer, loss=loss, metrics=['mse'])
 
@@ -36,7 +41,7 @@ def get_NN_model(input_dim=22, nodes_per_layer=[10], dropout=0.1,
 nn_model_steps = {
     'standardize': StandardScaler(),
     'nn_model': KerasRegressor(build_fn=get_NN_model,
-                               epochs=50,
-                               batch_size=75,
+                               epochs=100,
+                               batch_size=128,
                                verbose=0)
 }

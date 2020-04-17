@@ -28,9 +28,10 @@ parameters = {
     'nn_model__input_dim': [22,],
     'nn_model__nodes_per_layer': [(10, 5), (10, 10, 5)],
     'nn_model__dropout': [0.1, 0.2], #[0, 0.1, 0.2, 0.3],  # 0.1 or 0.2
-    'nn_model__batch_size': [75, 100], #[50, 75, 100, 150, 200, 300],  # 75
-    'nn_model__epochs': [200, 300], # [50, 100, 150, 200, 250, 300],  # 200 better
+    'nn_model__batch_size': [64, 128, 256, 512],   # 75
+    'nn_model__epochs': [100, 200, 300], # [50, 100, 150, 200, 250, 300],  # 200 better
     'nn_model__optimizer': ['adam'], #, 'rmsprop'],  # adam is better
+    'nn_model__learning_rate': [0.001, 0.005, 0.01], 
 }
 
 
@@ -82,7 +83,7 @@ if __name__ == "__main__":
         print("\t%s: %r" % (param_name, best_parameters[param_name]))
 
     df = pd.DataFrame(grid_search.cv_results_)
-    df.to_csv(f'./search_results/grid_search_nn_statified{datetime.now().strftime("%Y-%m-%d %H:%M")}.csv', index=None)
+    df.to_csv(f'./search_results/grid_search_nn_stratified{datetime.now().strftime("%Y-%m-%d %H:%M")}.csv', index=None)
 
     y_pred = grid_search.best_estimator_.predict(X_test)
     y_train_pred = grid_search.best_estimator_.predict(X_train)
