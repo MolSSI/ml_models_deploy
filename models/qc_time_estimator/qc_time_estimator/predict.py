@@ -61,8 +61,9 @@ def make_prediction(*, input_data: Union[pd.DataFrame, List[dict]]) -> dict:
     results = {'predictions': prediction, 'version': _version}
 
     logger.info(
-        f'Making predictions with model version: {_version} '
-        f'Inputs: {validated_data} '
+        f'Making predictions with model version: {_version} \n'
+        f'Original Input data: {data.to_dict("records")} \n'
+        f'Validated Inputs: {validated_data.to_dict("records")} \n'
         f'Predictions: {results}')
 
     return results
