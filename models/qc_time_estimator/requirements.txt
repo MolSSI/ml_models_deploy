@@ -8,13 +8,13 @@ click
 
 # production requirements
 numpy==1.18.1
-scikit-learn==0.22.1
+scikit-learn==0.21.3
 pandas==1.0.0
 keras== 2.3.1  # has error with Flask threads
 # keras==2.2.5
 # git+https://github.com/keras-team/keras.git@master#egg=keras
 tensorflow==2.1.0
-# qcelemental==0.12.0
+# qcelemental==0.13.1
 pydantic==1.4
 
 # plotly
