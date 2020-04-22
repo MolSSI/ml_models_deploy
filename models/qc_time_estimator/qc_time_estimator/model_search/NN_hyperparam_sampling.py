@@ -6,7 +6,7 @@ import logging
 from pprint import pprint
 from time import time
 from sklearn.metrics import make_scorer
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
 from qc_time_estimator.pipeline import qc_time_nn
 from qc_time_estimator.metrics import mape, percentile_rel_99
 from qc_time_estimator.processing.data_management import load_dataset
@@ -14,8 +14,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold
 import pandas as pd
 from datetime import datetime
-from sklearn.utils.fixes import loguniform
-from qc_time_estimator.processing.data_management import save_pipeline
+from scipy.stats import uniform, loguniform, randint
+# from sklearn.utils.fixes import loguniform
+
+
 
 
 logging.basicConfig(level=logging.INFO,
@@ -24,14 +26,17 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger(__name__)
 
 
+# Num of iter (samples/model) to try
+n_iter = 200
+
 parameters = {
     'nn_model__input_dim': [22,],
     'nn_model__nodes_per_layer': [(10, 5), (10, 10, 5)],
-    'nn_model__dropout': [0.1, 0.2], #[0, 0.1, 0.2, 0.3],  # 0.1 or 0.2
-    'nn_model__batch_size': [64, 128, 256, 512],   # 75
-    'nn_model__epochs': [100, 200, 300], # [50, 100, 150, 200, 250, 300],  # 200 better
-    'nn_model__optimizer': ['adam'], #, 'rmsprop'],  # adam is better
-    'nn_model__learning_rate': [0.001, 0.005, 0.01],
+    'nn_model__dropout': uniform(0, 0.7),
+    'nn_model__batch_size': [64, 128, 256, 512],
+    'nn_model__epochs': randint(50, 400),
+    'nn_model__optimizer': ['adam', 'rmsprop'],
+    'nn_model__learning_rate': loguniform(1e-4, 1e0),
 }
 
 
@@ -55,17 +60,18 @@ if __name__ == "__main__":
         # train_size=config.TRAIN_SIZE,
         random_state=config.SEED)
 
-    grid_search = GridSearchCV(qc_time_nn,
-                               parameters,
-                               scoring={
-                                   'percentile99': make_scorer(percentile_rel_99, greater_is_better=False),
-                                   'MAPE': make_scorer(mape, greater_is_better=False),
-                               },
-                               refit='percentile99',
-                               n_jobs=-1,  # -2 to use all CPUs except one
-                               return_train_score=True,
-                               cv=KFold(n_splits=2, random_state=0),
-                               verbose=1)
+    grid_search = RandomizedSearchCV(qc_time_nn,
+                                     parameters,
+                                     scoring={
+                                        'percentile99': make_scorer(percentile_rel_99, greater_is_better=False),
+                                        'MAPE': make_scorer(mape, greater_is_better=False),
+                                     },
+                                     refit='percentile99',
+                                     n_jobs=-1,  # -2 to use all CPUs except one
+                                     return_train_score=True,
+                                     n_iter=n_iter,
+                                     cv=KFold(n_splits=2, random_state=0),
+                                     verbose=1)
 
     print("Performing grid search...")
     print("pipeline:", [name for name, _ in qc_time_nn.steps])
