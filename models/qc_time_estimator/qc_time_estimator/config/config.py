@@ -9,38 +9,46 @@ DATASET_DIR = PACKAGE_ROOT / 'datasets'
 
 # data
 TESTING_DATA_FILE = 'test_data.csv'  # for pytest
-# TRAINING_DATA_FILE = 'train_test_with_header.csv'
-TRAINING_DATA_FILE = 'StratifiedTimingData_10000_bucket_wall_time.csv'
-# ZENODO_TRAINING_DATA_URL = 'https://zenodo.org/record/3728119/files/train_test_with_header.zip?'
-ZENODO_TRAINING_DATA_URL = f'https://zenodo.org/record/3728119/files/{TRAINING_DATA_FILE.rstrip(".csv")}.zip'
-
+TRAINING_DATA_FILE = 'all_data_duplicates_removed.csv'
+ZENODO_TRAINING_DATA_URL = f'https://zenodo.org/record/3827947/files/{TRAINING_DATA_FILE.rstrip(".csv")}.zip'
 PIPELINE_NAME = 'qc_time_estimator'
 PIPELINE_SAVE_FILE = f'{PIPELINE_NAME}_output_v'
 
 
-BEST_MODEL_PARAMS_OLD = {
-    'mean_gradient_boosting_regressor__max_depth': 18,
-}
+# ver 1.0.0
+# BEST_MODEL_PARAMS = {
+#     'mean_gradient_boosting_regressor__max_depth': 18,
+# }
 
+# ver 2.0.0
+# BEST_MODEL_PARAMS = {
+#     'nn_model__input_dim': 22,
+#     'nn_model__nodes_per_layer': [10],
+#     'nn_model__batch_size': 75,
+#     'nn_model__epochs': 200,
+#     'nn_model__optimizer': 'adam',
+# }
+
+
+# new clean data, ver 3.0.0
+# mean_test_percentile99
+# mean_test_MAPE
 BEST_MODEL_PARAMS = {
-    'nn_model__input_dim': 22,
-    'nn_model__nodes_per_layer': [10],
-    'nn_model__batch_size': 75,
-    'nn_model__epochs': 200,
-    'nn_model__optimizer': 'adam',
-}
+    'nn_model__batch_size': 128,
+    'nn_model__dropout': 0.0714014,
+    'nn_model__epochs': 298,
+    'nn_model__learning_rate': 0.0011857,
+    'nn_model__nodes_per_layer': (10, 5),
+    'nn_model__optimizer': 'adam'}
 
 # Model config
 
-# TEST_SIZE = 0.2
-# TRAIN_SIZE = None
-
-TEST_SIZE = 100_000
-TRAIN_SIZE = 100_000
-
-MAX_DEPTH = 18
+TEST_SIZE = 0.2
+TRAIN_SIZE = None
 
 SEED = 1234
+
+MAX_DEPTH = 18
 
 TARGET = 'wall_time'
 

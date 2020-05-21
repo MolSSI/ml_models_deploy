@@ -2,7 +2,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout
 from keras.wrappers.scikit_learn import KerasRegressor
 from sklearn.preprocessing import StandardScaler
-from qc_time_estimator.metrics import percentile_rel_99
+from qc_time_estimator.metrics import percentile_rel_90
 from keras.optimizers import Adam
 
 

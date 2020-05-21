@@ -8,9 +8,8 @@ from time import time
 from sklearn.metrics import make_scorer
 from sklearn.model_selection import GridSearchCV
 from qc_time_estimator.pipeline import qc_time
-from qc_time_estimator.metrics import mape, percentile_rel_99
-from qc_time_estimator.processing.data_management import load_dataset
-from sklearn.model_selection import train_test_split
+from qc_time_estimator.metrics import mape, percentile_rel_90
+from qc_time_estimator.processing.data_management import load_dataset, get_train_test_split
 
 
 
@@ -33,17 +32,15 @@ if __name__ == "__main__":
 
     data = data.dropna(axis=0)
 
-    X_train, X_test, y_train, y_test = train_test_split(
+    X_train, X_test, y_train, y_test = get_train_test_split(
         data,
         data[config.TARGET] / 3600.0,
-        test_size=0.2,
-        # test_size=config.TEST_SIZE,
-        # train_size=config.TRAIN_SIZE,
-        random_state=config.SEED)
+        test_size=0.2)
+
 
     grid_search = GridSearchCV(qc_time,
                                parameters,
-                               scoring=make_scorer(percentile_rel_99),
+                               scoring=make_scorer(percentile_rel_90),
                                n_jobs=-1,
                                cv=3,
                                verbose=1)
@@ -67,8 +64,8 @@ if __name__ == "__main__":
     y_pred = grid_search.best_estimator_.predict(X_test)
     y_train_pred = grid_search.best_estimator_.predict(X_train)
 
-    print('Y Train score 99th percentile: ', percentile_rel_99(y_train, y_train_pred))
+    print('Y Train score 90th percentile: ', percentile_rel_90(y_train, y_train_pred))
     print('Train mean: ', mape(y_train, y_train_pred))
 
-    print('Y Test score 99th percentile: ', percentile_rel_99(y_test, y_pred))
+    print('Y Test score 90th percentile: ', percentile_rel_90(y_test, y_pred))
     print('Test mean: ', mape(y_test, y_pred))

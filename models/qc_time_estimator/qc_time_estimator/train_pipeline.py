@@ -2,12 +2,11 @@ from qc_time_estimator.config import config
 import numpy as np
 np.random.seed(config.SEED)
 
-from sklearn.model_selection import train_test_split
 # from sklearn.metrics import mean_absolute_error
 from qc_time_estimator.pipeline import qc_time_nn as model
 from qc_time_estimator.pipeline import input_features_pipeline
 from qc_time_estimator.processing.data_management import (
-     load_dataset, save_pipeline, save_data, current_model_exists)
+     load_dataset, save_pipeline, save_data, current_model_exists, get_train_test_split)
 from qc_time_estimator.predict import get_accuracy
 from qc_time_estimator import __version__ as _version
 from typing import Union, Tuple
@@ -49,23 +48,15 @@ def run_training(with_accuracy=True, overwrite=True,
 
     logger.debug(f'Training data columns: \n{data.columns}')
 
-    # Drop rows with any NAN values - No imputation
-    data = data.dropna(axis=0)
-
     test_size, train_size = config.TEST_SIZE, config.TRAIN_SIZE
     if use_all_data:
         test_size, train_size = None, 0.99
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        data,
-        data[config.TARGET]/ 3600.0,
-        test_size=test_size,
-        train_size=train_size,
-        random_state=config.SEED)
+    X_train, X_test, y_train, y_test = get_train_test_split(data, test_size=test_size, train_size=train_size)
 
     logger.info('Start fitting model...')
 
-    # Save some formated test data
+    # Save some formatted test data
     X_test_ = input_features_pipeline.fit_transform(X_test, y_test)
     save_data(X=X_test_, y=y_test, file_name=config.TESTING_DATA_FILE, max_rows=5000)
 

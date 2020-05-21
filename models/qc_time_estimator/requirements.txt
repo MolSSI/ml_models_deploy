@@ -1,15 +1,15 @@
 # packaging
-setuptools==41.0.0
-wheel==0.32.3
+setuptools>=41.0.0
+wheel>=0.32.3
 basis_set_exchange
 click
 # git from conda
 
 
 # production requirements
-numpy==1.18.1
+numpy>=1.18.1
+pandas>=1.0.3
 scikit-learn==0.21.3
-pandas==1.0.0
 keras== 2.3.1  # has error with Flask threads
 # keras==2.2.5
 # git+https://github.com/keras-team/keras.git@master#egg=keras

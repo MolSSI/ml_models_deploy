@@ -3,7 +3,7 @@ import numpy as np
 from qc_time_estimator.config import config
 from qc_time_estimator.processing.data_management import load_pipeline
 from qc_time_estimator.processing.validation import validate_inputs
-from qc_time_estimator.metrics import mape, percentile_rel_99
+from qc_time_estimator.metrics import mape, percentile_rel_90
 from qc_time_estimator import __version__ as _version
 import logging
 from typing import Union, List
@@ -74,6 +74,6 @@ def get_accuracy(model, X, y):
 
     pred =  model.predict(X)
     mape_score = mape(y, pred)
-    percentile_99 = percentile_rel_99(y, pred)
+    percentile_99 = percentile_rel_90(y, pred)
 
     return mape_score, percentile_99

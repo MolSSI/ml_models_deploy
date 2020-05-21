@@ -8,14 +8,13 @@ from time import time
 from sklearn.metrics import make_scorer
 from sklearn.model_selection import GridSearchCV
 from qc_time_estimator.pipeline import qc_time_nn
-from qc_time_estimator.metrics import mape, percentile_rel_99
-from qc_time_estimator.processing.data_management import load_dataset
-from sklearn.model_selection import train_test_split
+from qc_time_estimator.metrics import mape, percentile_rel_90
+from qc_time_estimator.processing.data_management import load_dataset, get_train_test_split
 from sklearn.model_selection import KFold
 import pandas as pd
 from datetime import datetime
-from sklearn.utils.fixes import loguniform
-from qc_time_estimator.processing.data_management import save_pipeline
+# from sklearn.utils.fixes import loguniform
+# from qc_time_estimator.processing.data_management import save_pipeline
 
 
 logging.basicConfig(level=logging.INFO,
@@ -41,24 +40,12 @@ if __name__ == "__main__":
     # change max_rows, None means all data
     data = load_dataset(file_name=config.TRAINING_DATA_FILE, nrows=None)
 
-    data = data.dropna(axis=0)
-
-    bins = np.linspace(0, data.shape[0], 100)  # 100 bins
-    y_binned = np.digitize(data[config.TARGET]/ 3600.0, bins)
-
-    X_train, X_test, y_train, y_test = train_test_split(
-        data,
-        data[config.TARGET]/ 3600.0,
-        test_size=0.2,
-        stratify=y_binned,
-        # test_size=config.TEST_SIZE,
-        # train_size=config.TRAIN_SIZE,
-        random_state=config.SEED)
+    X_train, X_test, y_train, y_test = get_train_test_split(data, test_size=0.2)
 
     grid_search = GridSearchCV(qc_time_nn,
                                parameters,
                                scoring={
-                                   'percentile99': make_scorer(percentile_rel_99, greater_is_better=False),
+                                   'percentile99': make_scorer(percentile_rel_90, greater_is_better=False),
                                    'MAPE': make_scorer(mape, greater_is_better=False),
                                },
                                refit='percentile99',
@@ -84,15 +71,15 @@ if __name__ == "__main__":
         print("\t%s: %r" % (param_name, best_parameters[param_name]))
 
     df = pd.DataFrame(grid_search.cv_results_)
-    df.to_csv(f'./search_results/grid_search_nn_stratified{datetime.now().strftime("%Y-%m-%d %H:%M")}.csv', index=None)
+    df.to_csv(f'./search_results/grid_search_nn_no_duplicates{datetime.now().strftime("%Y-%m-%d %H:%M")}.csv', index=None)
 
     y_pred = grid_search.best_estimator_.predict(X_test)
     y_train_pred = grid_search.best_estimator_.predict(X_train)
 
-    print('Y Train 99th percentile: ', percentile_rel_99(y_train, y_train_pred))
+    print('Y Train 90th percentile: ', percentile_rel_90(y_train, y_train_pred))
     print('Train mape: ', mape(y_train, y_train_pred))
 
-    print('Y Test 99th percentile: ', percentile_rel_99(y_test, y_pred))
+    print('Y Test 90th percentile: ', percentile_rel_90(y_test, y_pred))
     print('Test mape: ', mape(y_test, y_pred))
 
     # save_pipeline(pipeline_to_persist=grid_search.best_estimator_)
