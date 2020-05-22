@@ -26,16 +26,16 @@ logger = logging.getLogger(__name__)
 
 
 # Num of iter (samples/model) to try
-n_iter = 200
+n_iter = 300
 
 parameters = {
     'nn_model__input_dim': [22,],
     'nn_model__nodes_per_layer': [(10, 5), (10, 10, 5), (10, 10, 7, 5)],
-    'nn_model__dropout': uniform(0, 0.5),
+    'nn_model__dropout': uniform(0, 0.3),  # max 0.3 is ok
     'nn_model__batch_size': [64, 128, 256, 512],
     'nn_model__epochs': randint(50, 400),
     'nn_model__optimizer': ['adam'],
-    'nn_model__learning_rate': loguniform(1e-4, 1e0),
+    'nn_model__learning_rate': loguniform(1e-4, 1e-1),  # search in smaller nums, < 0.1
 }
 
 

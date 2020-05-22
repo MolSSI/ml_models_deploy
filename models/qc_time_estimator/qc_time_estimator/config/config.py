@@ -30,15 +30,15 @@ PIPELINE_SAVE_FILE = f'{PIPELINE_NAME}_output_v'
 # }
 
 
-# new clean data, ver 3.0.0
-# mean_test_percentile99
+# all data no duplicates, ver 4.0.0
+# mean_test_percentile90
 # mean_test_MAPE
 BEST_MODEL_PARAMS = {
-    'nn_model__batch_size': 128,
-    'nn_model__dropout': 0.0714014,
-    'nn_model__epochs': 298,
-    'nn_model__learning_rate': 0.0011857,
-    'nn_model__nodes_per_layer': (10, 5),
+    'nn_model__batch_size': 512,
+    'nn_model__dropout': 0.01935,
+    'nn_model__epochs': 360,
+    'nn_model__learning_rate': 0.0001629,
+    'nn_model__nodes_per_layer': (10, 10, 7, 5),
     'nn_model__optimizer': 'adam'}
 
 # Model config

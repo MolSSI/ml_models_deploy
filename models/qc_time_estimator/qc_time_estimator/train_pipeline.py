@@ -6,8 +6,9 @@ np.random.seed(config.SEED)
 from qc_time_estimator.pipeline import qc_time_nn as model
 from qc_time_estimator.pipeline import input_features_pipeline
 from qc_time_estimator.processing.data_management import (
-     load_dataset, save_pipeline, save_data, current_model_exists, get_train_test_split)
-from qc_time_estimator.predict import get_accuracy
+     load_dataset, save_pipeline, save_data, current_model_exists, get_train_test_split,
+     load_pipeline)
+from qc_time_estimator.predict import get_accuracy, make_prediction
 from qc_time_estimator import __version__ as _version
 from typing import Union, Tuple
 import logging
@@ -58,7 +59,7 @@ def run_training(with_accuracy=True, overwrite=True,
 
     # Save some formatted test data
     X_test_ = input_features_pipeline.fit_transform(X_test, y_test)
-    save_data(X=X_test_, y=y_test, file_name=config.TESTING_DATA_FILE, max_rows=5000)
+    save_data(X=X_test_, y=y_test, file_name=config.TESTING_DATA_FILE)  #, max_rows=5000)
 
     # train and save the model
     model.set_params(**config.BEST_MODEL_PARAMS)
@@ -78,6 +79,23 @@ def run_training(with_accuracy=True, overwrite=True,
         logger.info(f'Testing 99th Percentile % error: {test_99per}')
 
         return train_mape, test_mape
+
+
+def run_testing(file_name=config.TESTING_DATA_FILE) -> Tuple[float, float]:
+    """
+    Run testing using held out data
+    """
+
+    test_data = load_dataset(file_name=file_name)
+
+    pipeline_file_name = f'{config.PIPELINE_SAVE_FILE}{_version}.pkl'
+    curr_model = load_pipeline(file_name=pipeline_file_name)
+    test_mape, test_99per = get_accuracy(curr_model, test_data, test_data['wall_time'])
+
+    logger.info(f'Testing Mean absolute % error: {test_mape}')
+    logger.info(f'Testing 99th Percentile % error: {test_99per}')
+
+    return test_mape, test_99per
 
 
 if __name__ == '__main__':

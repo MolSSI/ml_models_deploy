@@ -23,14 +23,15 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger(__name__)
 
 
+
 parameters = {
     'nn_model__input_dim': [22,],
-    'nn_model__nodes_per_layer': [(10, 5), (10, 10, 5)],
-    'nn_model__dropout': [0.1, 0.2], #[0, 0.1, 0.2, 0.3],  # 0.1 or 0.2
-    'nn_model__batch_size': [64, 128, 256, 512],   # 75
-    'nn_model__epochs': [100, 200, 300], # [50, 100, 150, 200, 250, 300],  # 200 better
+    'nn_model__nodes_per_layer': [(10, 10, 5), (10, 10, 7, 5)],
+    'nn_model__dropout': [0, 0.05, 0.1, 0.015, 0.2],
+    'nn_model__batch_size': [64, 128, 256, 512],
+    'nn_model__epochs': [100, 200, 300, 400],
     'nn_model__optimizer': ['adam'], #, 'rmsprop'],  # adam is better
-    'nn_model__learning_rate': [0.001, 0.005, 0.01],
+    'nn_model__learning_rate': [0.0001, 0.0005, 0.001, 0.005, 0.01],
 }
 
 
