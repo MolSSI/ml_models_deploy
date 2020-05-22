@@ -12,7 +12,7 @@ pandas>=1.0.3
 scikit-learn==0.21.3
 keras== 2.3.1  # has error with Flask threads
 # keras==2.2.5
-# git+https://github.com/keras-team/keras.git@master#egg=keras
+# keras @ git+https://github.com/keras-team/keras.git@master#egg=keras
 tensorflow==2.1.0
 # qcelemental==0.13.1
 pydantic==1.4
@@ -20,8 +20,7 @@ pydantic==1.4
 # plotly
 
 # latest dev master
-git+https://github.com/MolSSI/QCElemental.git@master#egg=qcelemental
-
+qcelemental @ git+https://github.com/MolSSI/QCElemental.git@master#egg=qcelemental
 
 # testing requirements
 pytest>=4.6.6
