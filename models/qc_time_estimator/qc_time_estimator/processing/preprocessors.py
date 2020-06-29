@@ -119,7 +119,10 @@ class CPUFeatures(BaseEstimator, TransformerMixin):
         for cpu in X["cpu"]:
             info = cpu_info.get(cpu)
             clock.append(info.base_clock / 1_000_000)
-            launch.append(info.launch_date)
+            if not info.launch_date:
+                launch.append(2018)  # TODO imputation
+            else:
+                launch.append(info.launch_date)
             vendor.append(info.vendor)
             instructions.append(info.instructions)
 

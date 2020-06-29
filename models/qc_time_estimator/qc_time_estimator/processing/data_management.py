@@ -9,6 +9,8 @@ import logging
 from typing import List
 from zipfile import ZipFile
 import pathlib
+import numpy as np
+from sklearn.model_selection import train_test_split
 
 
 logger = logging.getLogger(__name__)
@@ -42,6 +44,26 @@ def load_dataset(*, file_name: str, nrows=None) -> pd.DataFrame:
     data = pd.read_csv(pathlib_file, nrows=nrows)
 
     return data
+
+
+def get_train_test_split(data: pd.DataFrame, test_size=config.TEST_SIZE, train_size=None):
+
+    data = data.dropna(axis=0)
+
+    # 100 equally spaced bins
+    bins = np.linspace(0, data.shape[0], 100)
+    # return the indices of the bins to which each value in target array belongs.
+    y_binned = np.digitize(data[config.TARGET]/ 3600.0, bins)
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        data,
+        data[config.TARGET]/ 3600.0,
+        test_size=test_size,
+        train_size=train_size,
+        stratify=y_binned,
+        random_state=config.SEED)
+
+    return X_train, X_test, y_train, y_test
 
 
 def save_pipeline(*, pipeline_to_persist):

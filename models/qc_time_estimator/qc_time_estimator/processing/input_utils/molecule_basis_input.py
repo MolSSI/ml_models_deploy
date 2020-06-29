@@ -104,12 +104,12 @@ def get_nmo(element_counts, basis_set_name) -> int:
     """Returns the features nmo from user molecule and basis set inputs"""
 
     element_nbasis_map = get_element_nbasis_map(basis_set_name)
-    nmo = sum(
-        [
-            count * element_nbasis_map[element]
-            for element, count in element_counts.items()
-        ]
-    )
+
+    nmo = 0
+    for element, count in element_counts.items():
+        if element not in element_nbasis_map.keys():
+            raise Exception(f"Element ({element}) doesn't exist in basis set ({basis_set_name})")
+        nmo += count * element_nbasis_map[element]
 
     return nmo
 

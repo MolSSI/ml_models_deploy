@@ -1,8 +1,6 @@
 import io
 import os
-import sys
 from pathlib import Path
-import pip
 from setuptools import find_packages, setup
 
 
@@ -15,25 +13,14 @@ AUTHOR = 'Doaa Altarawy'
 REQUIRES_PYTHON = '>=3.6.5'
 
 
-try:
-    if pip.__version__ >= "19.3":
-        from pip._internal.req import parse_requirements
-        from pip._internal.network.session import PipSession
-    elif pip.__version__ >= "10.0" and pip.__version__ < "19.3":
-        from pip._internal.req import parse_requirements
-        from pip._internal.download import PipSession
-    else:  # pip < 10 is not supported
-        raise Exception('Please upgrade pip: pip install --upgrade pip')
-except ImportError as err:  # for future changes in pip
-    print('New breaking changes in pip!!', err)
-    sys.exit()
-
 
 def read_requirements():
     """parses requirements from requirements.txt"""
 
-    install_reqs = parse_requirements('requirements.txt', session=PipSession())
-    return [ir.name for ir in install_reqs]
+    with open('requirements.txt') as f:
+        req = f.readlines()
+
+    return req
 
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -71,6 +58,9 @@ setup(
     extras_require={},
     include_package_data=True,
     license='BSD-3C',
+    entry_points={
+            "console_scripts": ["qc-time-estimator=qc_time_estimator.cli:main"],
+    },
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',

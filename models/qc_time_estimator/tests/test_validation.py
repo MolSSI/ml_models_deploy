@@ -7,8 +7,8 @@ import pandas as pd
     "molecule,basis,nmo,nelec,driver,cpu_launch_year,cpu_clock_speed",
     [
         ("InChI=1S/CH4O/c1-2/h2H,1H3", "cc-pvdz", 48, 18, DriverEnum.hessian, 2005, 1100),
-        ("H2O", "6-31g*", 19, 10, DriverEnum.energy, 2020, 500),
-        ("CC1=CC=CC=C1", "def2-tzvpd", 331, 50, DriverEnum.gradient, 1999, 3400),
+        ("H2O", "6-31g*", 19, 10, DriverEnum.energy, 2020, 1000),
+        ("CC1=CC=CC=C1", "def2-tzvpd", 331, 50, DriverEnum.gradient, 2001, 3400),
     ],
 )
 def test_validation_success(molecule, basis, nmo, nelec, driver,
@@ -36,7 +36,7 @@ def test_validation_success(molecule, basis, nmo, nelec, driver,
     [
         ("InChI=invalid", "cc-pvdz", 2015, 1400, DriverEnum.hessian),
         ("H2O", "6-31g*", 2005, 2, 'Invalid driver'),
-        ("CC1=CC=CC=C1", "def2-tzvpd", 1900, 3100, DriverEnum.energy),
+        ("CC1=CC=CC=C1", "def2-tzvpd", 200, 3100, DriverEnum.energy),
         ("CC1=CC=CC=C1", "def2-tzvpd", 2019, -2, DriverEnum.gradient),
     ],
 )
