@@ -13,7 +13,7 @@ scikit-learn==0.21.3
 keras== 2.3.1  # has error with Flask threads
 # keras==2.2.5
 # keras @ git+https://github.com/keras-team/keras.git@master#egg=keras
-tensorflow==2.5.1
+tensorflow==2.5.2
 # qcelemental==0.13.1
 pydantic==1.4
 
