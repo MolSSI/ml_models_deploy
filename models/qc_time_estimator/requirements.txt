@@ -15,7 +15,7 @@ keras== 2.3.1  # has error with Flask threads
 # keras @ git+https://github.com/keras-team/keras.git@master#egg=keras
 tensorflow==2.5.2
 # qcelemental==0.13.1
-pydantic==1.4
+pydantic==1.6.2
 
 # plotly
 
